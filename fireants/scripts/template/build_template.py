@@ -179,6 +179,7 @@ def main(args):
             updated_template_arr = laplace(updated_template_arr, itk_scale=False, learning_rate=1)
             updated_template_arr = updated_template_arr.clamp(min=0)
             updated_template_arr = fireants_interpolator(input=updated_template_arr, affine=None, grid=inverse_avg_warp, mode='bilinear', align_corners=True)
+            del avg_warp, inverse_avg_warp
 
         # apply laplacian filter
         for _ in range(args.num_laplacian):
