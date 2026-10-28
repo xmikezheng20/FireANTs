@@ -176,7 +176,8 @@ def main(args):
             # now we have added all the average grid coordinates, take inverse
             init_template_batch.broadcast(1)
             inverse_avg_warp = shape_averaging_invwarp(init_template_batch, avg_warp)
-            updated_template_arr = laplace(updated_template_arr, itk_scale=True, learning_rate=1)
+            updated_template_arr = laplace(updated_template_arr, itk_scale=False, learning_rate=1)
+            updated_template_arr = updated_template_arr.clamp(min=0)
             updated_template_arr = fireants_interpolator(input=updated_template_arr, affine=None, grid=inverse_avg_warp, mode='bilinear', align_corners=True)
 
         # apply laplacian filter
@@ -184,6 +185,7 @@ def main(args):
             updated_template_arr = laplace(updated_template_arr)
         
         if args.normalize_images:
+            updated_template_arr = updated_template_arr.clamp(min=0)
             updated_template_arr = normalize(updated_template_arr)
 
         logger.debug("Template updated...")
