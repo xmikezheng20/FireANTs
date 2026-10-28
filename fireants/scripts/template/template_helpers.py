@@ -54,7 +54,8 @@ def normalize(img):
 def add_shape(avg_warp: Optional[torch.Tensor], reg: AbstractRegistration):
     if avg_warp is None:
         return None
-    avg_warp = avg_warp + reg.get_warped_coordinates(reg.fixed_images, reg.moving_images).sum(0, keepdim=True)
+    with torch.no_grad():
+        avg_warp = avg_warp + reg.get_warped_coordinates(reg.fixed_images, reg.moving_images).sum(0, keepdim=True)
     return avg_warp
 
 def try_add_to_config(args, key, default):
